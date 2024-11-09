@@ -8,8 +8,16 @@ int main(int argc, char *argv[]) {
 }
 
 SlowSolution::SlowSolution() : Node("slowsolution") {
-  RCLCPP_INFO(this->get_logger(), "Remove this statement from spin_slow_update.cpp");
-  // your code here
+  pos_subscription = this->create_subscription<ArrayMsg>(
+    "measuredpos", 10, std::bind(&SlowSolution::pos_callback, this, std::placeholders::_1));
+  
+  predicted_pos_publisher = this->create_publisher<ArrayMsg>("predictedpos", 10);
 }
 
-// your code here
+void SlowSolution::pos_callback(const ArrayMsg::SharedPtr msg) {
+  RCLCPP_INFO(this->get_logger(), "Received position: [%f, %f]", msg->data[0], msg->data[1]);
+
+  ArrayMsg predicted_pos_msg;
+  predicted_pos_msg.data = {msg->data[0], msg->data[1]};
+  predicted_pos_publisher->publish(predicted_pos_msg);
+}
