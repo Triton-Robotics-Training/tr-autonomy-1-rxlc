@@ -20,4 +20,6 @@ void SlowSolution::pos_callback(const ArrayMsg::SharedPtr msg) {
   ArrayMsg predicted_pos_msg;
   predicted_pos_msg.data = {msg->data[0], msg->data[1]};
   predicted_pos_publisher->publish(predicted_pos_msg);
+
+  
 }
